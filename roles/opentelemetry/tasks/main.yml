@@ -1,0 +1,26 @@
+---
+  - name: Download AWSOtelCollector
+    get_url:
+        url: https://aws-otel-collector.s3.amazonaws.com/amazon_linux/amd64/latest/aws-otel-collector.rpm
+        dest: /tmp
+
+  - name: Install AWSOtelCollector
+    shell: rpm -Uvh  /tmp/aws-otel-collector.rpm
+
+  - name: Remove RPM File
+    file:
+      path: "/tmp/aws-otel-collector.rpm"
+      state: absent
+
+  - name: Start AWSOtelCollector
+    shell: /opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl -a start
+
+  - name: Configure AWSOtelCollector
+    template:
+      src: config.yaml.j2
+      dest: /opt/aws/aws-otel-collector/etc/config.yaml
+
+  - name: Restart AWSOtelCollector
+    systemd:
+      name: aws-otel-collector.service
+      state: restarted

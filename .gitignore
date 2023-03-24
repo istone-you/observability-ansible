@@ -1,0 +1,4 @@
+hosts/inventory.ini
+roles/fluent-bit/vars/main.yml
+roles/node-exporter/vars/main.yml
+roles/opentelemetry/vars/main.yml

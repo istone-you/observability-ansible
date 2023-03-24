@@ -1,0 +1,125 @@
+receivers:
+  prometheus:
+    config:
+      global:
+        scrape_interval: 60s
+        scrape_timeout: 60s
+      scrape_configs:
+      - job_name: "node-exporter"
+        static_configs:
+        - targets: [ localhost:9100 ]
+          labels:
+            hostname: "{{ ansible_hostname }}"
+processors:
+  filter:
+    metrics:
+      include:
+        match_type: strict
+        metric_names:
+        # Node Exporter
+          - up
+          - node_filesystem_size_bytes
+          - node_filesystem_avail_bytes
+          - node_cpu_seconds_total
+          - node_load1
+          - node_load5
+          - node_load15
+          - node_memory_MemAvailable_bytes
+          - node_memory_MemTotal_bytes
+          - node_memory_SwapFree_bytes
+          - node_memory_SwapTotal_bytes
+          - node_context_switches_total
+          - node_cpu_seconds_total
+          - node_filesystem_device_error
+          - node_boot_time_seconds
+          - node_uname_info
+          - node_network_receive_bytes_total
+          - node_network_transmit_bytes_total
+          - node_intr_total
+          - node_filefd_maximum
+          - node_procs_running
+          - node_systemd_unit_state
+          - node_os_info
+          - node_time_seconds
+          - password_sum
+          - backup_file_out
+          - logged_in_users
+          - number_of_processes
+        # Fluent Bit Metrics
+          - fluentbit_output_errors_total
+        # Apache Exporter
+          - apache_up
+          - apache_accesses_total
+          - apache_duration_ms_total
+          - apache_cpuload
+          - apache_sent_kilobytes_total
+          - apache_workers
+        # Process Exporter
+          - namedprocess_namegroup_states
+          - process_max_fds
+        # Systemd Exporter
+          - systemd_unit_state
+        # Blackbox Exporter
+          - probe_success
+          - probe_icmp_duration_seconds
+          - probe_ssl_earliest_cert_expiry
+          - probe_http_status_code
+          - probe_http_duration_seconds
+        # Yet Another CloudWatch Exporter
+          - aws_ec2_cpuutilization_average
+          - aws_ec2_info
+          - aws_ec2_network_in_average
+          - aws_ec2_network_out_average
+          - aws_es_cpuutilization_average
+          - aws_es_free_storage_space_sum
+          - aws_es_info
+          - aws_es_sys_memory_utilization_average
+          - aws_fsx_client_connections_average
+          - aws_fsx_cpuutilization_average
+          - aws_fsx_disk_read_bytes_average
+          - aws_fsx_disk_write_bytes_average
+          - aws_fsx_free_storage_capacity_average
+          - aws_fsx_info
+          - aws_fsx_memory_utilization_average
+          - aws_lambda_duration_average
+          - aws_lambda_errors_sum
+          - aws_lambda_info
+          - aws_lambda_invocations_sum
+          - aws_lambda_throttles_average
+          - aws_rds_cpuutilization_average
+          - aws_rds_database_connections_sum
+          - aws_rds_free_storage_space_average
+          - aws_rds_freeable_memory_average
+          - aws_rds_info
+          - aws_rds_network_receive_throughput_average
+          - aws_rds_network_transmit_throughput_average
+          - aws_rds_read_latency_average
+          - aws_rds_write_latency_average
+          - aws_s3_bucket_size_bytes_average
+          - aws_s3_info
+          - aws_s3_number_of_objects_average
+          - aws_sns_info
+          - aws_sns_number_of_notifications_delivered_sum
+          - aws_sns_number_of_notifications_failed_sum
+          - aws_tgw_bytes_in_average
+          - aws_tgw_bytes_out_average
+          - aws_tgw_info
+          - aws_tgw_packets_in_average
+          - aws_tgw_packets_out_average
+          - aws_vpn_info
+          - aws_vpn_tunnel_data_in_average
+          - aws_vpn_tunnel_data_out_average
+          - aws_vpn_tunnel_state_average
+          - yace_cloudwatch_getmetricdata_requests_total
+          - yace_cloudwatch_requests_total
+exporters:
+  prometheusremotewrite:
+    endpoint: {{ PrometheusEndpoint }}
+    resource_to_telemetry_conversion:
+      enabled: true
+service:
+  pipelines:
+    metrics:
+      receivers: [prometheus]
+      processors: [filter]
+      exporters: [prometheusremotewrite]

@@ -1,0 +1,12 @@
+[Unit]
+Description=node exporter
+After=syslog.target network.target
+
+[Service]
+Type=simple
+ExecStart=/etc/prometheus/node_exporter-1.2.2.linux-amd64/node_exporter --collector.interrupts --collector.logind --collector.mountstats --collector.textfile.directory=/etc/prometheus/textfile
+ExecStop=/bin/kill -INT $MAINPID
+Restart = always
+
+[Install]
+WantedBy=multi-user.target

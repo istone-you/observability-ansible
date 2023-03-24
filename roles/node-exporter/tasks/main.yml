@@ -1,0 +1,42 @@
+---
+  - name: Install Node Exporter
+    get_url:
+        url: https://github.com/prometheus/node_exporter/releases/download/v1.2.2/node_exporter-1.2.2.linux-amd64.tar.gz
+        dest: /tmp
+
+  - name: Make Prometheus Directory
+    file:
+      path: "/etc/prometheus"
+      state: directory
+
+  - name: UnArchive Gzip
+    shell: tar xfz /tmp/node_exporter-1.2.2.linux-amd64.tar.gz -C /etc/prometheus/
+
+  - name: Remove Gzip File
+    file:
+      path: "/tmp/node_exporter-1.2.2.linux-amd64.tar.gz"
+      state: absent
+
+  - name: Make Textfile Directory
+    file:
+      path: "/etc/prometheus/textfile"
+      state: directory
+
+  - name: Configure Systemd
+    copy:
+        src: node_exporter.service
+        dest: /etc/systemd/system/node_exporter.service
+
+  - name: Systemd Daemon Reload
+    systemd:
+        daemon_reload: yes
+
+  - name: Systemd Enabled Node Exporter
+    systemd:
+        name: node_exporter.service
+        enabled: yes
+
+  - name: Systemd Start Node Exporter
+    systemd:
+        name: node_exporter.service
+        state: started
