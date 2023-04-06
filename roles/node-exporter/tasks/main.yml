@@ -1,7 +1,7 @@
 ---
   - name: Install Node Exporter
     get_url:
-        url: https://github.com/prometheus/node_exporter/releases/download/v1.2.2/node_exporter-1.2.2.linux-amd64.tar.gz
+        url: https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz
         dest: /tmp
 
   - name: Make Prometheus Directory
@@ -10,11 +10,11 @@
       state: directory
 
   - name: UnArchive Gzip
-    shell: tar xfz /tmp/node_exporter-1.2.2.linux-amd64.tar.gz -C /etc/prometheus/
+    shell: tar xfz /tmp/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz -C /etc/prometheus/
 
   - name: Remove Gzip File
     file:
-      path: "/tmp/node_exporter-1.2.2.linux-amd64.tar.gz"
+      path: "/tmp/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz"
       state: absent
 
   - name: Make Textfile Directory

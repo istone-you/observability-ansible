@@ -1,26 +1,26 @@
 ---
-  - name: Download AWSOtelCollector
+  - name: Download OtelCollector
     get_url:
-        url: https://aws-otel-collector.s3.amazonaws.com/amazon_linux/amd64/latest/aws-otel-collector.rpm
+        url: https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v{{ otel_version }}/otelcol-contrib_{{ otel_version }}_linux_amd64.rpm
         dest: /tmp
 
-  - name: Install AWSOtelCollector
-    shell: rpm -Uvh  /tmp/aws-otel-collector.rpm
+  - name: Install OtelCollector
+    shell: rpm -Uvh /tmp/otelcol-contrib_{{ otel_version }}_linux_amd64.rpm
 
   - name: Remove RPM File
     file:
-      path: "/tmp/aws-otel-collector.rpm"
+      path: /tmp/otelcol-contrib_{{ otel_version }}_linux_amd64.rpm
       state: absent
 
-  - name: Start AWSOtelCollector
+  - name: Start OtelCollector
     shell: /opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl -a start
 
-  - name: Configure AWSOtelCollector
+  - name: Configure OtelCollector
     template:
       src: config.yaml.j2
       dest: /opt/aws/aws-otel-collector/etc/config.yaml
 
-  - name: Restart AWSOtelCollector
+  - name: Restart OtelCollector
     systemd:
       name: aws-otel-collector.service
       state: restarted

@@ -8,9 +8,9 @@ receivers:
       - job_name: "node-exporter"
         static_configs:
         - targets: [ localhost:9100 ]
-          labels:
-            hostname: "{{ ansible_hostname }}"
 processors:
+  resourcedetection:
+    detectors: [ec2]
   filter:
     metrics:
       include:
@@ -114,12 +114,12 @@ processors:
           - yace_cloudwatch_requests_total
 exporters:
   prometheusremotewrite:
-    endpoint: {{ PrometheusEndpoint }}
+    endpoint: {{ prometheus_endpoint }}
     resource_to_telemetry_conversion:
       enabled: true
 service:
   pipelines:
     metrics:
       receivers: [prometheus]
-      processors: [filter]
+      processors: [resourcedetection, filter]
       exporters: [prometheusremotewrite]

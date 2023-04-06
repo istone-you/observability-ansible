@@ -3,10 +3,14 @@
 
 PrometheusのNode ExporterとOpenTelemetry、Fluent Bitをサーバーにインストールして、メトリクスとログをそれぞれPrometheusとLokiに送信する設定をするAnsibleのPlaybookです。
 
+roles/node-exporter/var/main.ymlを作成して以下の変数を指定する必要があります。
+- node_exporter_version
+
 roles/fluent-bit/var/main.ymlを作成して以下の変数を指定する必要があります。
-- GrafanaLokiUser
-- GrafanaLokiPass
+- loki_user
+- loki_passwd
 
 roles/opentelemetry/var/main.ymlを作成して以下の変数を指定する必要があります。
-- PrometheusEndpoint
+- prometheus_endpoint
+- otel_version
 
