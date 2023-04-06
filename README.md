@@ -5,6 +5,7 @@ PrometheusのNode ExporterとOpenTelemetry、Fluent Bitをサーバーにイン�
 
 roles/node-exporter/var/main.ymlを作成して以下の変数を指定する必要があります。
 - node_exporter_version
+- prometheus_textfile_directory
 
 roles/fluent-bit/var/main.ymlを作成して以下の変数を指定する必要があります。
 - loki_user
